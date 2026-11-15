@@ -15,6 +15,13 @@
       "when": 1794734420583,
       "tag": "0001_categories",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1794734925528,
+      "tag": "0002_verify_deploy_migrations",
+      "breakpoints": true
     }
   ]
 }

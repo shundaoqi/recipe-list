@@ -3,6 +3,8 @@
   "name": "recipe-list",
   "main": "src/server/index.ts",
   "compatibility_date": "2026-11-01",
+  "workers_dev": true,
+  "preview_urls": false,
   "assets": {
     "not_found_handling": "single-page-application",
     "run_worker_first": ["/api/*"]
@@ -12,7 +14,7 @@
       "binding": "DB",
       "database_name": "recipe-list",
       // `npx wrangler d1 create recipe-list` で作成した本番 D1 の ID
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "63fe10f0-ecd3-480e-9c27-48554db2b816",
       "migrations_dir": "drizzle"
     }
   ],

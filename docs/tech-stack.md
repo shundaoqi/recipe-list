@@ -42,6 +42,7 @@ Cloudflare Workers（1 つの Worker）
 ## 3. ソース管理
 
 - GitHub：https://github.com/shundaoqi/recipe-list （非公開）
+- 本番 URL：https://recipe-list.recipe-list.workers.dev
 - `main` ブランチ ＝ 本番
 
 ## 4. デプロイ

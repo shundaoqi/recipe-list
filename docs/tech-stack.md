@@ -1,4 +1,4 @@
-# レシピリストアプリ 技術構成 v1.0
+# レシピリストアプリ 技術構成 v1.1
 
 要件は [requirements.md](requirements.md)、画面は [screens.md](screens.md) を参照。
 
@@ -30,7 +30,7 @@ Cloudflare Workers（1 つの Worker）
 | API                | Hono ＋ Zod（@hono/zod-validator） | ルーティング、入力チェック                 |
 | 画面 ↔ API         | fetch ＋ 共有の型（src/shared）    | 画面と API で型・入力チェックを共有        |
 | DB                 | Cloudflare D1 ＋ Drizzle ORM       | 型付きの読み書き、マイグレーション管理     |
-| PWA                | vite-plugin-pwa                    | ホーム画面への追加（manifest、アイコン）   |
+| PWA                | vite-plugin-pwa                    | ホーム画面への追加、画面ファイルの更新     |
 | テスト             | Vitest                             | 材料の合算処理など                         |
 | 整形・静的チェック | Biome                              | フォーマット、lint                         |
 | パッケージ管理     | npm                                |                                            |
@@ -44,14 +44,19 @@ Cloudflare Workers（1 つの Worker）
 - GitHub：https://github.com/shundaoqi/recipe-list （非公開）
 - 本番 URL：https://recipe-list.recipe-list.workers.dev
 - `main` ブランチ ＝ 本番
+- 個人のリポジトリなので、会社のアカウント・メールアドレスと混ぜない
+  - コミットの作成者はリポジトリ単位の設定（`git config user.name` / `user.email`）で個人のものにしている
+  - push はリポジトリ単位の credential helper で、常に shundaoqi のトークン（`gh auth token -u shundaoqi`）を使う。GitHub CLI で有効なアカウントが会社用でも push できる
 
 ## 4. デプロイ
 
-### 初回（手動）
+### 初回（手動、実施済み）
 
-1. `wrangler login` で Cloudflare にログイン
+1. `wrangler login` で Cloudflare（個人アカウント）にログイン
 2. `wrangler d1 create recipe-list` で本番 D1 を作成し、ID を `wrangler.jsonc` に記入
 3. `npm run deploy` で公開
+
+Cloudflare アカウントのメールアドレスが未確認だと、Worker の公開がエラーになる（code: 10034）。
 
 ### 2 回目以降（Workers Builds による自動デプロイ）
 
@@ -63,10 +68,16 @@ Cloudflare Workers（1 つの Worker）
 | ビルドコマンド   | `npm run build`  |
 | デプロイコマンド | `npm run deploy` |
 
+設定場所：Cloudflare 管理画面 → Workers & Pages → recipe-list → Settings → Build
+
 `npm run deploy` は次を順に実行する：
 
 1. `wrangler d1 migrations apply recipe-list --remote`（テーブル変更を本番 D1 に反映）
 2. `wrangler deploy`（Worker を公開）
+
+**デプロイコマンドは必ず `npm run deploy` にする。** 初期値の `npx wrangler deploy` のままだとマイグレーションが実行されず、新しいコードが古いテーブルで動いてしまう（2026-11-15 に発生）。
+
+GitHub 側は「Cloudflare Workers and Pages」アプリに `recipe-list` リポジトリだけを許可している（GitHub → Settings → Applications → Installed GitHub Apps）。
 
 ## 5. テーブル構成の管理
 
@@ -80,9 +91,20 @@ Cloudflare Workers（1 つの Worker）
   - 本番に適用済みのマイグレーションファイルは編集しない。修正は新しいファイルで行う
   - 列・テーブルの削除などデータが消える変更は事前に確認する
   - 本番 D1 の構成を管理画面や手動 SQL で直接変更しない
+- テーブルを作り直す変更（CHECK 制約の変更など）の注意：
+  - drizzle-kit が生成する `PRAGMA foreign_keys=OFF` は D1 のマイグレーション中は効かない。代わりに `PRAGMA defer_foreign_keys = on` を使う
+  - `recipes` を DROP すると `ingredients` が CASCADE で消えるため、`ingredients` を一時テーブルに退避して戻す（`drizzle/0001_categories.sql` を参照）
+  - 本番に入れる前に、データの入ったローカル D1 で件数が変わらないことを確認する
+- ローカル D1 のファイルは `wrangler.jsonc` の `database_id` ごとに作られる（`.wrangler/state/v3/d1/`）
 
 ## 6. 開発の流れ
 
 1. `npm run dev` で手元に画面・API・ローカル D1 を起動して確認
-2. `npm run test` / `npm run check` でテストと静的チェック
-3. `main` に push → 自動デプロイ
+2. `npm test` / `npm run check` でテストと静的チェック
+3. `main` に push → 約 1 分で自動デプロイ
+4. スマホのホーム画面のアプリは、開き直すと新しいバージョンになる
+
+### npm の注意
+
+- npm 11 は依存パッケージのインストールスクリプトを既定で実行しない。必要な esbuild・workerd は `package.json` の `allowScripts` で許可している
+- これらのバージョンが変わると許可し直しが必要（`npm install-scripts ls` で確認、`npm install-scripts approve <pkg>` で許可）

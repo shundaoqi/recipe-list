@@ -1,4 +1,4 @@
-# レシピリストアプリ 設計 v1.0
+# レシピリストアプリ 設計 v1.1
 
 ## 1. テーブル設計（D1 / SQLite）
 
@@ -25,6 +25,7 @@
 | quantity  | REAL    | NULL 可                                     | 数量。単位が「適量」「少々」のとき NULL |
 | unit      | TEXT    | NOT NULL                                    | 単位（下記の選択肢）                    |
 
+- `recipes.category` の CHECK 制約は `src/shared/recipe.ts` の `CATEGORIES` から生成する
 - インデックス：`ingredients(recipe_id, position)`
 - レシピ更新時は、そのレシピの材料をすべて削除して入れ直す（D1 の batch で 1 トランザクション）
 
@@ -80,6 +81,14 @@ type Recipe = {
 | レシピデータ | メモリ                              | 画面表示時に `/api/recipes` を取得 |
 
 - 削除済みのレシピ ID が選択に残っていたら無視し、保存し直す
+- もう一人の更新を反映するため、アプリが前面に戻ったとき（`visibilitychange`）に `/api/recipes` を取り直す
+- 登録・更新・削除の後は、API の結果で手元のレシピデータを更新する（全件は取り直さない）
+
+### PWA の更新
+
+- Service Worker（vite-plugin-pwa、`registerType: "autoUpdate"`）が画面ファイルをキャッシュする。`/api/*` はキャッシュしない
+- 起動時と、アプリが前面に戻ったときに新しいバージョンを確認し、見つかれば自動で再読み込みする（`src/client/main.tsx`）
+- ホーム画面のアプリは、デプロイ直後の 1 回目の起動では古い画面が出ることがある。開き直すか、別のアプリから戻ると新しい画面になる
 
 ## 4. 材料の合算ロジック
 
@@ -96,8 +105,8 @@ type Recipe = {
 ```
 鶏もも肉 550g
 玉ねぎ 1個 + 100g
-醤油 大さじ3
-塩 少々
+みりん 大さじ3
+揚げ油 適量
 ```
 
 - 数値の後ろに付ける単位（g、ml、個…）と、前に付ける単位（大さじ、小さじ、カップ）を区別する
@@ -112,18 +121,21 @@ recipe-list/
 ├─ public/                   アイコン（PWA）
 ├─ src/
 │  ├─ client/                画面（Preact）
-│  │  ├─ main.tsx            起動処理
+│  │  ├─ main.tsx            起動処理、PWA の更新確認
 │  │  ├─ app.tsx             ルーティング
 │  │  ├─ pages/
 │  │  │  ├─ RecipeListPage.tsx     S1 レシピ一覧
 │  │  │  ├─ IngredientsPage.tsx    S2 材料一覧
 │  │  │  ├─ RecipeDetailPage.tsx   S3 レシピ詳細
 │  │  │  └─ RecipeFormPage.tsx     S4 登録・編集
-│  │  ├─ components/         共通部品
+│  │  ├─ components/         共通部品（Header、CategoryBadge、ConfirmDialog、Toast、LoadState、Icons）
 │  │  ├─ lib/
 │  │  │  ├─ api.ts           API クライアント（fetch）
-│  │  │  └─ selection.ts     選択状態（localStorage）
-│  │  └─ styles.css
+│  │  │  ├─ recipes.tsx      レシピデータ（Context）
+│  │  │  ├─ selection.tsx    選択状態（Context ＋ localStorage）
+│  │  │  ├─ clipboard.ts     コピー（Clipboard API が使えないときの代替あり）
+│  │  │  └─ navigation.ts    最後に開いた一覧の URL
+│  │  └─ styles.css          Tailwind とテーマの色
 │  ├─ server/                API（Hono）
 │  │  ├─ index.ts            Worker のエントリ、ルート定義
 │  │  └─ db/schema.ts        Drizzle のテーブル定義
@@ -132,11 +144,13 @@ recipe-list/
 │     ├─ units.ts            単位の定義
 │     ├─ aggregate.ts        材料の合算
 │     └─ aggregate.test.ts
-├─ drizzle/                  マイグレーション SQL
+├─ drizzle/                  マイグレーション SQL（0000 初期、0001 カテゴリ変更、0002 動作確認用の空）
 ├─ wrangler.jsonc            Cloudflare 設定（D1 の紐付け）
-├─ vite.config.ts
+├─ worker-configuration.d.ts `npm run cf-typegen` で生成する Worker の型
+├─ vite.config.ts            Vite・Cloudflare・PWA の設定
+├─ vitest.config.ts
 ├─ drizzle.config.ts
 ├─ biome.json
-├─ tsconfig.json
+├─ tsconfig.json             画面用（tsconfig.client.json）と Worker 用（tsconfig.worker.json）を束ねる
 └─ package.json
 ```

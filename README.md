@@ -9,6 +9,8 @@
 
 構成：Cloudflare Workers（Hono）＋ D1（Drizzle）＋ Preact ＋ Tailwind CSS
 
+本番：https://recipe-list.recipe-list.workers.dev （`main` に push すると自動デプロイ）
+
 ## 開発
 
 ```sh
@@ -25,3 +27,4 @@ npm run dev                # http://localhost:5173
 | `npm run db:generate` | `src/server/db/schema.ts` の変更からマイグレーション SQL を生成 |
 | `npm run build`       | 本番ビルド                                                      |
 | `npm run deploy`      | 本番 D1 にマイグレーションを適用し、Worker を公開               |
+| `npm run cf-typegen`  | `wrangler.jsonc` から Worker の型を生成                         |

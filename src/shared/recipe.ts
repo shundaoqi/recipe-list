@@ -1,13 +1,16 @@
 import { z } from "zod";
 import { hasQuantity, UNITS } from "./units";
 
-export const CATEGORIES = ["meat", "fish", "side"] as const;
+export const CATEGORIES = ["beef", "pork", "chicken", "fish", "side", "other"] as const;
 export type Category = (typeof CATEGORIES)[number];
 
 export const CATEGORY_LABELS: Record<Category, string> = {
-  meat: "肉系",
-  fish: "魚系",
+  beef: "牛",
+  pork: "豚",
+  chicken: "鳥",
+  fish: "魚",
   side: "副菜",
+  other: "その他",
 };
 
 export const ingredientInputSchema = z

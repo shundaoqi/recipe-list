@@ -4,15 +4,15 @@
 
 ### recipes（レシピ）
 
-| カラム     | 型      | 制約                               | 内容                    |
-| ---------- | ------- | ---------------------------------- | ----------------------- |
-| id         | INTEGER | PK, 自動採番                       |                         |
-| title      | TEXT    | NOT NULL                           | 料理名                  |
-| category   | TEXT    | NOT NULL, `meat` / `fish` / `side` | 肉系／魚系／副菜        |
-| tiktok_url | TEXT    | NULL 可                            | TikTok リンク           |
-| memo       | TEXT    | NULL 可                            | メモ                    |
-| created_at | INTEGER | NOT NULL                           | 作成日時（UNIX ミリ秒） |
-| updated_at | INTEGER | NOT NULL                           | 更新日時（UNIX ミリ秒） |
+| カラム     | 型      | 制約                                                              | 内容                         |
+| ---------- | ------- | ----------------------------------------------------------------- | ---------------------------- |
+| id         | INTEGER | PK, 自動採番                                                      |                              |
+| title      | TEXT    | NOT NULL                                                          | 料理名                       |
+| category   | TEXT    | NOT NULL, `beef` / `pork` / `chicken` / `fish` / `side` / `other` | 牛／豚／鳥／魚／副菜／その他 |
+| tiktok_url | TEXT    | NULL 可                                                           | TikTok リンク                |
+| memo       | TEXT    | NULL 可                                                           | メモ                         |
+| created_at | INTEGER | NOT NULL                                                          | 作成日時（UNIX ミリ秒）      |
+| updated_at | INTEGER | NOT NULL                                                          | 更新日時（UNIX ミリ秒）      |
 
 ### ingredients（材料）
 
@@ -30,7 +30,7 @@
 
 ### 単位の選択肢
 
-`g`、`ml`、`個`、`本`、`枚`、`束`、`片`、`パック`、`カップ`、`大さじ`、`小さじ`、`適量`、`少々`
+`g`、`ml`、`個`、`本`、`枚`、`切れ`、`尾`、`束`、`株`、`玉`、`片`、`袋`、`パック`、`缶`、`cm`、`カップ`、`大さじ`、`小さじ`、`適量`、`少々`
 
 - 数量なしの単位：`適量`、`少々`
 - 単位の換算（kg → g、大さじ → ml など）はしない
@@ -48,7 +48,7 @@
 | DELETE   | `/api/recipes/:id` | 削除                                 | 204 / 404                |
 
 ```ts
-type Category = "meat" | "fish" | "side";
+type Category = "beef" | "pork" | "chicken" | "fish" | "side" | "other";
 
 type Ingredient = {
   name: string; // 1〜50 文字、前後の空白は除去
@@ -76,7 +76,7 @@ type Recipe = {
 | 状態         | 保存先                              | 内容                               |
 | ------------ | ----------------------------------- | ---------------------------------- |
 | 選択中の料理 | localStorage（`selectedRecipeIds`） | レシピ ID の配列（選択した順）     |
-| カテゴリタブ | URL のクエリ（`?c=meat`）           | 戻ったときにタブを保持             |
+| カテゴリタブ | URL のクエリ（`?c=pork`）           | 戻ったときにタブを保持             |
 | レシピデータ | メモリ                              | 画面表示時に `/api/recipes` を取得 |
 
 - 削除済みのレシピ ID が選択に残っていたら無視し、保存し直す

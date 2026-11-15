@@ -14,7 +14,12 @@ export const recipes = sqliteTable(
     createdAt: integer("created_at").notNull(),
     updatedAt: integer("updated_at").notNull(),
   },
-  (t) => [check("recipes_category_check", sql`${t.category} in ('meat', 'fish', 'side')`)],
+  (t) => [
+    check(
+      "recipes_category_check",
+      sql`${t.category} in (${sql.raw(CATEGORIES.map((c) => `'${c}'`).join(", "))})`,
+    ),
+  ],
 );
 
 export const ingredients = sqliteTable(

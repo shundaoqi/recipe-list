@@ -44,7 +44,10 @@ export function RecipeListPage() {
         </button>
       </Header>
 
-      <nav aria-label="カテゴリ" class="flex gap-2 border-b border-line bg-white px-4 py-3">
+      <nav
+        aria-label="カテゴリ"
+        class="flex gap-2 overflow-x-auto border-b border-line bg-white px-4 py-3 [scrollbar-width:none]"
+      >
         {TABS.map((t) => {
           const active = t.id === tab;
           return (
@@ -53,7 +56,7 @@ export function RecipeListPage() {
               type="button"
               aria-pressed={active}
               onClick={() => route(t.id === "all" ? "/" : `/?c=${t.id}`, true)}
-              class={`min-h-9 rounded-full border px-4 text-sm font-medium ${
+              class={`min-h-9 shrink-0 rounded-full border px-4 text-sm font-medium whitespace-nowrap ${
                 active
                   ? "border-primary bg-primary text-white"
                   : "border-outline bg-white text-primary"

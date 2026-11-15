@@ -1,9 +1,12 @@
 import { CATEGORY_LABELS, type Category } from "../../shared/recipe";
 
 const COLORS: Record<Category, string> = {
-  meat: "bg-meat-bg text-meat-fg",
+  beef: "bg-beef-bg text-beef-fg",
+  pork: "bg-pork-bg text-pork-fg",
+  chicken: "bg-chicken-bg text-chicken-fg",
   fish: "bg-fish-bg text-fish-fg",
   side: "bg-side-bg text-side-fg",
+  other: "bg-other-bg text-other-fg",
 };
 
 export function CategoryBadge({ category }: { category: Category }) {

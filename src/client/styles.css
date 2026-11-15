@@ -15,12 +15,18 @@
   --color-field: #cccccc;
   --color-danger: #b91c1c;
 
-  --color-meat-bg: #fdebd3;
-  --color-meat-fg: #7c2d12;
+  --color-beef-bg: #fde2e2;
+  --color-beef-fg: #8f1d1d;
+  --color-pork-bg: #fce7f3;
+  --color-pork-fg: #9d174d;
+  --color-chicken-bg: #fdefcc;
+  --color-chicken-fg: #7a4a00;
   --color-fish-bg: #dbe7fd;
   --color-fish-fg: #1e3a8a;
   --color-side-bg: #e8f5e9;
   --color-side-fg: #1b5e20;
+  --color-other-bg: #ececec;
+  --color-other-fg: #3f3f3f;
 }
 
 @layer base {

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <title>レシピリスト</title>
+  <rect width="512" height="512" rx="112" fill="#593414"/>
+  <g fill="none" stroke="#fffaf0" stroke-width="32" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M128 240h256a128 128 0 0 1-256 0z"/>
+    <path d="M104 240h304"/>
+    <path d="M216 176c0-24 24-24 24-48M288 176c0-24 24-24 24-48"/>
+  </g>
+</svg>

@@ -1,0 +1,50 @@
+{
+  "name": "recipe-list",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "wrangler d1 migrations apply recipe-list --remote --config wrangler.jsonc && wrangler deploy",
+    "test": "vitest run",
+    "check": "biome check . && tsc -b",
+    "format": "biome check --write .",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate:local": "wrangler d1 migrations apply recipe-list --local",
+    "cf-typegen": "wrangler types"
+  },
+  "dependencies": {
+    "@hono/zod-validator": "0.9.1",
+    "drizzle-orm": "0.45.4",
+    "hono": "4.13.18",
+    "preact": "10.29.8",
+    "preact-iso": "2.12.2",
+    "preact-render-to-string": "6.8.3",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@babel/core": "7.29.13",
+    "@biomejs/biome": "2.6.7",
+    "@cloudflare/vite-plugin": "1.69.1",
+    "@preact/preset-vite": "2.10.6",
+    "@tailwindcss/vite": "4.3.5",
+    "@types/node": "24.19.2",
+    "drizzle-kit": "0.31.11",
+    "tailwindcss": "4.3.5",
+    "typescript": "7.0.2",
+    "vite": "8.3.8",
+    "vite-plugin-pwa": "2.0.0",
+    "vitest": "5.1.0",
+    "workbox-build": "7.4.1",
+    "workbox-window": "7.4.1",
+    "wrangler": "4.162.0"
+  },
+  "allowScripts": {
+    "esbuild@0.18.20": true,
+    "esbuild@0.25.12": true,
+    "esbuild@0.28.2": true,
+    "workerd@1.20261110.1": true,
+    "workerd@1.20261113.1": true
+  }
+}

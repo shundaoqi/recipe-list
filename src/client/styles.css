@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+/* 配色は「すくすくガーデン」デザインシステムに合わせる */
+@theme {
+  --font-sans: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, sans-serif;
+
+  --color-page: #fffaf0;
+  --color-ink: #3a1e0b;
+  --color-primary: #593414;
+  --color-primary-hover: #3a1e0b;
+  --color-outline: #8d6e63;
+  --color-muted: #666666;
+  --color-line: #e0e0e0;
+  --color-line-soft: #f5f5f5;
+  --color-field: #cccccc;
+  --color-danger: #b91c1c;
+
+  --color-meat-bg: #fdebd3;
+  --color-meat-fg: #7c2d12;
+  --color-fish-bg: #dbe7fd;
+  --color-fish-fg: #1e3a8a;
+  --color-side-bg: #e8f5e9;
+  --color-side-fg: #1b5e20;
+}
+
+@layer base {
+  html,
+  body {
+    background: var(--color-page);
+    color: var(--color-ink);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@utility pb-safe {
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+}

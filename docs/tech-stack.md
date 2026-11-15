@@ -42,7 +42,7 @@ Cloudflare Workers（1 つの Worker）
 ## 3. ソース管理
 
 - GitHub：https://github.com/shundaoqi/recipe-list （非公開）
-- 本番 URL：https://recipe-list.recipe-list.workers.dev
+- 本番 URL：https://recipe-list.shundaoqi.workers.dev
 - `main` ブランチ ＝ 本番
 - 個人のリポジトリなので、会社のアカウント・メールアドレスと混ぜない
   - コミットの作成者はリポジトリ単位の設定（`git config user.name` / `user.email`）で個人のものにしている
@@ -78,6 +78,26 @@ Cloudflare アカウントのメールアドレスが未確認だと、Worker �
 **デプロイコマンドは必ず `npm run deploy` にする。** 初期値の `npx wrangler deploy` のままだとマイグレーションが実行されず、新しいコードが古いテーブルで動いてしまう（2026-11-15 に発生）。
 
 GitHub 側は「Cloudflare Workers and Pages」アプリに `recipe-list` リポジトリだけを許可している（GitHub → Settings → Applications → Installed GitHub Apps）。
+
+### workers.dev サブドメインの変更
+
+本番 URL は `<Worker 名>.<アカウントのサブドメイン>.workers.dev` で、現在は `recipe-list.shundaoqi.workers.dev`（2026-11-15 に `recipe-list.recipe-list.workers.dev` から変更）。アカウントのサブドメインを変えると URL が `recipe-list.<新サブドメイン>.workers.dev` に変わる。
+
+- コードの変更は不要（API は相対パス `/api` で呼んでおり、URL を書いた設定もない）
+- D1・Workers Builds（自動デプロイ）・GitHub 連携は影響を受けない
+- 旧 URL から新 URL への転送はなく、旧 URL は使えなくなる
+
+手順：
+
+1. Cloudflare 管理画面 → Workers & Pages → 右側の「Subdomain」で変更する
+   - アカウント内のすべての Worker の URL が変わる
+   - 反映まで数分〜しばらくかかることがある。変更直後は新 URL の証明書がまだなく、開くと SSL エラーになる
+2. 新 URL でレシピ一覧が表示され、追加・編集できることを確認する
+3. `README.md` と本ファイル（「3. ソース管理」）の本番 URL を書き換えて `main` に push する
+4. 2 人のスマホで次を行う
+   - ホーム画面の旧アプリを削除し、新 URL を開いて「ホーム画面に追加」し直す（ホーム画面のアプリは旧 URL を開くため）
+   - ブラウザのブックマークがあれば新 URL に変える
+   - 材料一覧で選んでいた料理は URL ごとにブラウザに保存しているため引き継がれない。選び直す（レシピ自体は D1 にあるので消えない）
 
 ## 5. テーブル構成の管理
 

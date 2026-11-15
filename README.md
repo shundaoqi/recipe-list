@@ -9,7 +9,7 @@
 
 構成：Cloudflare Workers（Hono）＋ D1（Drizzle）＋ Preact ＋ Tailwind CSS
 
-本番：https://recipe-list.recipe-list.workers.dev （`main` に push すると自動デプロイ）
+本番：https://recipe-list.shundaoqi.workers.dev （`main` に push すると自動デプロイ）
 
 ## 開発
 
